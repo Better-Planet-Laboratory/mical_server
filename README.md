@@ -4,7 +4,7 @@
 
 The purpose of this repo is house the server side code for the FarmGeek web application. FarmGeek is a new web-based application for policy makers, researchers, funders, donors, and farm extension agents to identify the balance of the evidence for different on-farm interventions for agricultural outcomes such as yield, biodiversity, human health.
 
-This repository has been developed by worklearn students at the University of British Columbia, under direction of Zia Mehrabi and Navin Ramankutty. It is currently maintained by Zia Mehrabi, at the University of Colorado Boulder. Any questions please contact ziamehrabi@gmail.com.
+This repository has been developed by worklearn students at the University of British Columbia, under direction of Zia Mehrabi and Navin Ramankutty. It is currently maintained by Zia Mehrabi, at the University of Colorado Boulder. 
 
 ## 
 
