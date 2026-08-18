@@ -40,7 +40,7 @@ const config: ConfigSettings = {
     clientSecret: process.env.GITHUB_SECRET,
     callbackURL: ''
   },
-  connOpts: { auth: { authSource: 'admin' } },
+  connOpts: { authSource: 'admin' },
 };
 
 // settings for test environment

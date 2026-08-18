@@ -51,7 +51,7 @@ const YieldSchema = new Schema(SchemaJSON);
 YieldSchema.index({ location: '2dsphere' });
 YieldSchema.statics = Object.assign({}, DefaultStatistics);
 
-const Yield: IYieldModel = <IYieldModel>mongoose.model(TableName, YieldSchema);
+const Yield: IYieldModel = <IYieldModel><unknown>mongoose.model(TableName, YieldSchema);
 function getModel(): IOutcomeTableModel<IYieldDocument> {
   return Yield;
 }

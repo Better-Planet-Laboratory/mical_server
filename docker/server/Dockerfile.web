@@ -1,17 +1,21 @@
-FROM node:lts-alpine as build
+# Pinned (not lts-alpine): restify pulls in spdy -> http-deceiver, which uses
+# the Node internal `http_parser` binding. That binding still exists (deprecated)
+# through Node 22, but was removed entirely in Node 24, which crashes the app
+# on startup. Do not float this to lts-alpine until restify is upgraded off spdy.
+FROM node:22-alpine as build
 
 #install deps
-RUN apk add --no-cache git python make
+RUN apk add --no-cache git python3 make g++
 
 # configure server
 WORKDIR /opt
-RUN git clone https://github.com/AgriculturalEvidence/mical_server server; \
+RUN git clone https://github.com/Better-Planet-Laboratory/mical_server server; \
     cd server; \
     npm install; \
     npm run build; \
     rm -rf node_modules;
 
-FROM node:lts-alpine
+FROM node:22-alpine
 COPY --from=build /opt/server /opt/server
 
 WORKDIR /opt/server
