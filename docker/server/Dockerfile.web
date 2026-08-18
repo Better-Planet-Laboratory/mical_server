@@ -1,17 +1,25 @@
-FROM node:lts-alpine as build
+# Pinned (not lts-alpine, and not just "latest LTS"): restify 8.x depends on
+# spdy -> http-deceiver, which patches Node internals no longer safe to touch.
+#  - Node 24+ removed the `http_parser` binding entirely -> crash on require.
+#  - Node 18-22 made stream.Readable#closed a read-only getter -> restify's
+#    own patch throws on require.
+# Verified empirically (Aug 2026): only Node 14 and 16 boot cleanly. Both are
+# EOL/unpatched upstream, so this is a stopgap to unbreak deploys, not a fix -
+# the real fix is retiring restify+spdy for something maintained.
+FROM node:16-alpine as build
 
 #install deps
-RUN apk add --no-cache git python make
+RUN apk add --no-cache git python3 make g++
 
 # configure server
 WORKDIR /opt
-RUN git clone https://github.com/AgriculturalEvidence/mical_server server; \
+RUN git clone https://github.com/Better-Planet-Laboratory/mical_server server; \
     cd server; \
     npm install; \
     npm run build; \
     rm -rf node_modules;
 
-FROM node:lts-alpine
+FROM node:16-alpine
 COPY --from=build /opt/server /opt/server
 
 WORKDIR /opt/server

@@ -7,20 +7,29 @@ import { logger } from './utils/logger';
 mongoose.Promise = global.Promise;
 
 // connect to mongodb
-const options = {
+const options: mongoose.ConnectOptions = {
   user: config.dbUser,
   pass: config.dbPass,
-  useNewUrlParser: true,
-  keepAlive: true,
-  keepAliveInitialDelay: 300000,
+  serverSelectionTimeoutMS: 10000,
+  socketTimeoutMS: 45000,
   ...config.connOpts,
 };
-const db = mongoose.connect(config.db, <any>options);
+const db = mongoose.connect(config.db, options);
 
 // print mongoose logs in dev and test env
 if (config.debug) {
   mongoose.set('debug', true);
 }
+
+mongoose.connection.on('error', (err: any) => {
+  logger.error(`Mongo connection error: ${err}`);
+});
+mongoose.connection.on('disconnected', () => {
+  logger.warn('Mongo connection lost, driver will attempt to reconnect');
+});
+mongoose.connection.on('reconnected', () => {
+  logger.info('Mongo connection restored');
+});
 
 db.then(() => {
   logger.info(`Connected to database: ${config.db}`);
@@ -29,7 +38,7 @@ db.then(() => {
   });
 }, (err: any) => {
   console.log(
-    `Unable to connect to database: ${err}, url ${config.db}, opts: 
+    `Unable to connect to database: ${err}, url ${config.db}, opts:
     ${JSON.stringify(options, null , '\t')}`
   );
 });
